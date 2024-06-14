@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 
-
 public class Market implements MarketBehaviour, QueueBehaviour {
 
     private ArrayList<Human> actorsQueue;
