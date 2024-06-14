@@ -3,7 +3,7 @@
 public class App {
     public static void main(String[] args) throws Exception {
 
-        Market myMarket = new Market();
+        MarketQ myMarket = new MarketQ();
 
         Human ivan = new Human("Иван Степанович");
         Human valia = new Human("Валя");

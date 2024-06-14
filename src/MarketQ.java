@@ -1,74 +1,79 @@
-import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
-public class Market implements MarketBehaviour, QueueBehaviour {
+public class MarketQ implements MarketBehaviour, QueueBehaviour {
 
-    private ArrayList<Human> actorsQueue;
+    private Deque<Human> q_actors;
     
-    public Market (){
-        this.actorsQueue = new ArrayList<>();
+    public MarketQ (){
+        this.q_actors = new ArrayDeque<>();
     }
 
 
-    public void acceptToMarket(Human actor) {// входит в магазин
+    // входит в магазин
+
+    public void acceptToMarket(Human actor) {
         System.out.printf("%s вошёл в магазин.\n", actor.getName());
         takeInQueue(actor);
     }
 
+    // вход в очередь
+
     @Override
-    public void takeInQueue(Human actor) {// вход в очередь
-        this.actorsQueue.add(actor);
+    public void takeInQueue(Human actor) {
+        this.q_actors.add(actor);
+        takeOrders();
         System.out.printf("%s встал в очередь за заказом.\n", actor.getName());
     }
 
-    @Override
-    public void releaseFromMarket(Human actor) {// выходит из магазина
-        actorsQueue.remove(actor);
-        System.out.printf("%s вышёл из магазина.\n", actor.getName());
-    }
-
-
-    @Override
-    public void update() {
-        takeOrders();
-        giveOrders();
-        releaseFromQueue();
-        System.out.printf("Конец очереди=====.\n");
-    }
-
-    @Override
-    public void giveOrders() {
-        for (Human actor : actorsQueue) {
-            if (actor.isMakeOrder()) {
-                actor.setTakeOrder(true);
-                System.out.println(actor.getName() + " получил свой заказ ");
-            }
-        }
-    }
+    //делаем заказ
 
     @Override
     public void takeOrders() {
-        for (Human actor : actorsQueue) {
-            if (!actor.isMakeOrder()) {
-                actor.setMakeOrder(true);
-                System.out.println(actor.getName() + " сделал заказ ");
-            }
+        Human actor = q_actors.getLast();
+        if (!actor.isMakeOrder()) {
+            actor.setMakeOrder(true);
+            System.out.println(actor.getName() + " сделал заказ ");
         }
     }
 
-    // выход из очереди
+    // выдаем все заказы в очереди
+
+    @Override
+    public void update() {
+        while (!q_actors.isEmpty()){
+            giveOrders();
+        }
+        System.out.printf("======= Конец очереди =====.\n\n");
+    }
+
+    // выдаем заказ
+
+    @Override
+    public void giveOrders() {
+        Human actor = q_actors.getFirst();
+        if (actor.isMakeOrder()) {
+            actor.setTakeOrder(true);
+            System.out.println(actor.getName() + " получил свой заказ ");
+        }
+        releaseFromQueue();
+    }
+
+    // выходим из очереди
+
     @Override
     public void releaseFromQueue() {
-        boolean check = true;
-        do {
-            Human actor = actorsQueue.get(0);
-            if (actor.isTakeOrder()) {
-                System.out.println(actor.getName() + " ушел из очереди ");
-                releaseFromMarket(actor);
-                if (actorsQueue.size() < 1)
-                    check = false;
-                else
-                    actor = actorsQueue.get(0);
-            } 
-        } while (check);
+        Human actor = q_actors.pollFirst();
+        if (actor.isTakeOrder()) {
+            System.out.println(actor.getName() + " ушел из очереди ");
+            releaseFromMarket(actor);
+        }
+    }
+
+    // выходим из магазина
+
+    @Override
+    public void releaseFromMarket(Human actor) {// выходит из магазина
+        System.out.printf("%s вышёл из магазина.\n", actor.getName());
     }
 }

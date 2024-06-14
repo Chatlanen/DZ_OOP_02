@@ -1,18 +1,16 @@
-## Getting Started
+## Урок 2. Принципы ООП Абстракция и интерфейсы. Пример проектирования
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+1. Реализовать класс Market и все методы, которые он обязан реализовывать.
+2. Методы из интерфейса QueueBehaviour, имитируют работу очереди, MarketBehaviour – помещает и удаляет человека из очереди, метод update – обновляет состояние магазина (принимает и отдаёт заказы)
 
-## Folder Structure
+Класс MarketQ основан на очереди Deque.
+Заполнение очереди производится каскадным запуском имплементируемых процедур
 
-The workspace contains two folders by default, where:
+```
+| acceptToMarket
+-- | takeInQueue
+    ---| takeOrders
+```
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+Update разгружает очередь.
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
